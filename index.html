@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Piedra · Papel · Tijera — Minimal</title>
+  <style>
+    :root{
+      --bg: #0f1724; /* deep charcoal */
+      --card: #0f1724;
+      --muted: #9aa4b2;
+      --glass: rgba(255,255,255,0.04);
+      --accent: #8be9fd; /* subtle cyan */
+      --accent-2: #cdb4ff; /* soft violet */
+      --glass-2: rgba(255,255,255,0.03);
+      --radius: 14px;
+      --fw-heading: 600;
+      --shadow: 0 6px 24px rgba(2,6,23,0.6);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing: border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: linear-gradient(180deg, #071022 0%, #0b1220 100%);
+      color: #e6eef6;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .card{
+      width:100%;
+      max-width:760px;
+      background: linear-gradient(180deg,var(--glass), var(--glass-2));
+      border-radius:var(--radius);
+      padding:28px;
+      box-shadow:var(--shadow);
+      border: 1px solid rgba(255,255,255,0.04);
+      backdrop-filter: blur(6px) saturate(120%);
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:20px;
+    }
+
+    h1{
+      font-size:20px;
+      margin:0;
+      letter-spacing:0.4px;
+      font-weight:var(--fw-heading);
+    }
+
+    .score{
+      text-align:right;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .board{
+      display:grid;
+      grid-template-columns: 1fr 220px;
+      gap:20px;
+      align-items:start;
+    }
+
+    .play-area{
+      background:transparent;
+      padding:18px;
+      border-radius:12px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .choices{
+      display:flex;
+      gap:12px;
+    }
+
+    .choice-btn{
+      flex:1;
+      padding:14px 16px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.04);
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+      cursor:pointer;
+      font-size:15px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+      transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+      user-select:none;
+      backdrop-filter: blur(4px);
+    }
+    .choice-btn:active{transform:translateY(2px)}
+    .choice-btn[aria-pressed="true"]{box-shadow:0 8px 30px rgba(11,22,38,0.6); transform:scale(1.02)}
+
+    .choice-emoji{font-size:20px}
+    .result{
+      font-size:16px;
+      padding:10px 12px;
+      border-radius:10px;
+      min-height:46px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:var(--accent-2);
+      letter-spacing:0.2px;
+    }
+
+    .panel-right{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:16px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.03);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:stretch;
+    }
+
+    .small{font-size:13px;color:var(--muted)}
+
+    .meter{
+      display:flex;gap:10px;align-items:center;justify-content:center;padding:8px;border-radius:10px;background:transparent
+    }
+
+    .stat{
+      display:flex;flex-direction:column;align-items:center;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,0.015)
+    }
+    .stat b{font-size:18px}
+
+    .controls{display:flex;gap:8px;align-items:center}
+    .btn-ghost{
+      padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;cursor:pointer;font-size:13px
+    }
+    .btn-primary{
+      padding:10px 14px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#071022;font-weight:600;cursor:pointer;font-size:14px
+    }
+
+    footer{margin-top:14px;text-align:center;color:var(--muted);font-size:13px}
+
+    @media (max-width:720px){
+      .board{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <header>
+      <h1>Piedra · Papel · Tijera</h1>
+      <div class="score small" aria-live="polite">Primero a 3 victorias</div>
+    </header>
+
+    <section class="board">
+      <section class="play-area">
+        <div class="small">Elige tu jugada</div>
+        <div class="choices" role="radiogroup" aria-label="Opciones">
+          <button class="choice-btn" data-id="1" aria-pressed="false"><span class="choice-emoji">🥌</span><span>Piedra</span></button>
+          <button class="choice-btn" data-id="2" aria-pressed="false"><span class="choice-emoji">📃</span><span>Papel</span></button>
+          <button class="choice-btn" data-id="3" aria-pressed="false"><span class="choice-emoji">✄</span><span>Tijera</span></button>
+        </div>
+
+        <div class="result" id="result" aria-live="polite">¡Buena suerte! Elige una opción.</div>
+
+        <div class="small">PC eligió: <span id="pcChoice">—</span></div>
+
+        <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+          <button class="btn-ghost" id="btnReset">Reiniciar</button>
+          <button class="btn-primary" id="btnAuto">Jugar ronda</button>
+        </div>
+
+      </section>
+
+      <aside class="panel-right" aria-label="Marcador">
+        <div class="small">Marcador</div>
+        <div class="meter">
+          <div class="stat"><span class="small">Tú</span><b id="wins">0</b></div>
+          <div style="width:6px;height:6px;background:var(--accent);border-radius:50%"></div>
+          <div class="stat"><span class="small">PC</span><b id="losses">0</b></div>
+        </div>
+
+        <div class="small">Rondas jugadas: <span id="rounds">0</span></div>
+
+        <div style="margin-top:auto;display:flex;gap:8px;justify-content:flex-end;">
+          <button class="btn-ghost" id="btnHelp">Cómo jugar</button>
+        </div>
+      </aside>
+    </section>
+
+    <footer>Minimal • elegante • profesional</footer>
+  </main>
+
+  <script>
+    // Datos y utilidades mínimas para evitar código repetido
+    const choices = [
+      null,
+      { id: 1, name: 'Piedra', emoji: '🥌' },
+      { id: 2, name: 'Papel', emoji: '📃' },
+      { id: 3, name: 'Tijera', emoji: '✄' }
+    ];
+
+    const firstTo = 3; // número de victorias necesarias
+
+    let state = { wins: 0, losses: 0, rounds: 0, finished: false };
+
+    const el = selector => document.querySelector(selector);
+    const els = selector => Array.from(document.querySelectorAll(selector));
+
+    const resultEl = el('#result');
+    const pcChoiceEl = el('#pcChoice');
+    const winsEl = el('#wins');
+    const lossesEl = el('#losses');
+    const roundsEl = el('#rounds');
+    const choiceBtns = els('.choice-btn');
+    const btnReset = el('#btnReset');
+    const btnAuto = el('#btnAuto');
+    const btnHelp = el('#btnHelp');
+
+    // retorna entero 1..3
+    const randomChoice = () => Math.floor(Math.random() * 3) + 1;
+
+    // calcula resultado: 0 empate, 1 gana usuario, -1 pierde usuario
+    const calcOutcome = (user, pc) => {
+      if (user === pc) return 0;
+      // regla matemática: (user - pc + 3) % 3 -> 1 = user gana, 2 = pc gana
+      return ((user - pc + 3) % 3) === 1 ? 1 : -1;
+    };
+
+    const labelFor = id => (choices[id] ? `${choices[id].name} ${choices[id].emoji}` : 'Nulo');
+
+    function updateUI(){
+      winsEl.textContent = state.wins;
+      lossesEl.textContent = state.losses;
+      roundsEl.textContent = state.rounds;
+    }
+
+    function endGame(won){
+      state.finished = true;
+      const msg = won ? `¡Has ganado el juego (${state.wins} a ${state.losses})!` : `Perdiste el juego (${state.wins} a ${state.losses}).`;
+      resultEl.textContent = msg;
+      choiceBtns.forEach(b => b.setAttribute('disabled','')); // deshabilita botones
+    }
+
+    function playRound(userId){
+      if(state.finished) return;
+      const pcId = randomChoice();
+      const outcome = calcOutcome(userId, pcId);
+      state.rounds += 1;
+      pcChoiceEl.textContent = labelFor(pcId);
+
+      if(outcome === 0){
+        resultEl.textContent = `Empate — ambos eligieron ${labelFor(userId)}`;
+      } else if(outcome === 1){
+        state.wins += 1;
+        resultEl.textContent = `Ganaste — ${labelFor(userId)} vence a ${labelFor(pcId)}`;
+      } else {
+        state.losses += 1;
+        resultEl.textContent = `Perdiste — ${labelFor(pcId)} vence a ${labelFor(userId)}`;
+      }
+
+      updateUI();
+
+      if(state.wins >= firstTo || state.losses >= firstTo){
+        endGame(state.wins > state.losses);
+      }
+    }
+
+    // Eventos: elegir con botones
+    choiceBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = Number(btn.getAttribute('data-id'));
+        // efecto visual temporal
+        choiceBtns.forEach(b => b.setAttribute('aria-pressed','false'));
+        btn.setAttribute('aria-pressed','true');
+        playRound(id);
+      });
+    });
+
+    // Jugar una ronda aleatoria (útil para teclado/automatizar)
+    btnAuto.addEventListener('click', () => {
+      const rand = randomChoice();
+      playRound(rand);
+    });
+
+    btnReset.addEventListener('click', () => {
+      state = { wins:0, losses:0, rounds:0, finished:false };
+      resultEl.textContent = 'Juego reiniciado. ¡Buena suerte!';
+      pcChoiceEl.textContent = '—';
+      choiceBtns.forEach(b => b.removeAttribute('disabled'));
+      choiceBtns.forEach(b => b.setAttribute('aria-pressed','false'));
+      updateUI();
+    });
+
+    btnHelp.addEventListener('click', () => {
+      alert('Reglas:\n1 = Piedra 🥌 vence a Tijera ✄\n2 = Papel 📃 vence a Piedra 🥌\n3 = Tijera ✄ vence a Papel 📃\nPrimero a ' + firstTo + ' victorias.');
+    });
+
+    // Inicializa UI
+    updateUI();
+  </script>
+</body>
+</html>
