@@ -6,20 +6,29 @@
   <title>Piedra · Papel · Tijera — Minimal</title>
   <style>
     :root{
-      --bg: #0f1724; /* deep charcoal */
-      --card: #0f1724;
-      --muted: #9aa4b2;
-      --glass: rgba(255,255,255,0.04);
-      --accent: #8be9fd; /* subtle cyan */
-      --accent-2: #cdb4ff; /* soft violet */
-      --glass-2: rgba(255,255,255,0.03);
-      --radius: 14px;
+      --bg: #ffffff; /* white background */
+      --muted: #6b7280; /* cool gray */
+      --accent: #A8E6CF; /* mint pastel */
+      --accent-2: #FFD3B6; /* peach pastel */
+      --accent-3: #FFAAA5; /* soft rose pastel */
+      --glass: rgba(255,255,255,0.88);
+      --glass-2: rgba(250,250,250,0.96);
+      --radius: 12px;
       --fw-heading: 600;
-      --shadow: 0 6px 24px rgba(2,6,23,0.6);
+      --shadow: 0 8px 28px rgba(15,23,36,0.06);
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
     *{box-sizing: border-box}
-    html,body{height:100%}
+    html,body{
+      margin:0;
+      background: linear-gradient(180deg, #fbfbfd 0%, #ffffff 100%);
+      color: #0f1724; /* deep slate for text */
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      -webkit-font-smoothing:antialiased;
+    }
     body{
       margin:0;
       background: linear-gradient(180deg, #071022 0%, #0b1220 100%);
@@ -34,12 +43,12 @@
     .card{
       width:100%;
       max-width:760px;
-      background: linear-gradient(180deg,var(--glass), var(--glass-2));
+      background: var(--glass);
       border-radius:var(--radius);
       padding:28px;
       box-shadow:var(--shadow);
-      border: 1px solid rgba(255,255,255,0.04);
-      backdrop-filter: blur(6px) saturate(120%);
+      border: 1px solid rgba(15,23,36,0.06);
+      backdrop-filter: blur(8px) saturate(120%);
     }
 
     header{
@@ -88,17 +97,18 @@
       flex:1;
       padding:14px 16px;
       border-radius:12px;
-      border:1px solid rgba(255,255,255,0.04);
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+      border:1px solid rgba(15,23,36,0.06);
+      background: #ffffff;
       cursor:pointer;
       font-size:15px;
+      color: var(--0f1724, #0f1724);
       display:flex;
       gap:10px;
       align-items:center;
       justify-content:center;
       transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
       user-select:none;
-      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 14px rgba(12,18,28,0.04);
     }
     .choice-btn:active{transform:translateY(2px)}
     .choice-btn[aria-pressed="true"]{box-shadow:0 8px 30px rgba(11,22,38,0.6); transform:scale(1.02)}
@@ -112,8 +122,10 @@
       display:flex;
       align-items:center;
       gap:10px;
-      color:var(--accent-2);
+      color:var(--accent-3);
       letter-spacing:0.2px;
+      background: linear-gradient(90deg, rgba(168,230,207,0.12), rgba(255,211,182,0.08));
+      border: 1px solid rgba(15,23,36,0.04);
     }
 
     .panel-right{
@@ -196,7 +208,7 @@
       </aside>
     </section>
 
-    <footer>Minimal • elegante • profesional</footer>
+    <footer></footer>
   </main>
 
   <script>
